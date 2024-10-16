@@ -36,7 +36,7 @@ const App = () => {
     <div className=''>
       <div className='container-2'>
         <h1>Welcome to Bombot application</h1>
-        <img src='public\logo.png' width={100} height={100}/>
+        <img src='../logo.png' width={100} height={100}/>
         <p>Login with Facebook to see your fanpages</p>
       </div>
       <div className='container'>
