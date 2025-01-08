@@ -10,7 +10,7 @@ const LoginForm = (props) => {
       appId="1575157736708819"  // we need to get this from facebook developer console by setting the app.
       autoLoad={false}  
       fields="name,email,picture"
-      scope='public_profile,email,pages_show_list'
+      scope='public_profile,email,pages_show_list,pages_messaging'
       callback={props.handleFacebookCallback}/>
   );
 };
