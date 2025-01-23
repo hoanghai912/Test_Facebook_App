@@ -101,6 +101,19 @@ const App = () => {
     return color;
   }
 
+  const getPageLongLiveAccessToken = async (pageId, userAccessToken) => {
+    const response = await axios.get(`https://graph.facebook.com/v21.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${import.meta.env.VITE_FACEBOOK_APP_ID}&client_secret=${import.meta.env.VITE_FACEBOOK_APP_SECRET}&fb_exchange_token=${userAccessToken}`)
+    .catch(error => console.error(error));
+    const userLongLiveAccessToken = response.data.access_token;
+    // Get long live access token for page
+    const responsePage = await axios.get(`https://graph.facebook.com/v21.0/me/accounts?access_token=${userLongLiveAccessToken}`)
+    .catch(error => console.error(error));
+    const pages = responsePage.data.data;
+    const page = pages.find(page => page.id === pageId);
+    const pageLongLiveAccessToken = page.access_token;
+    return pageLongLiveAccessToken;
+  }
+
   const handleDeleteLabel = async (labelId, psid, accessToken) => {
     setIsLoading(true);
     await axios.delete(`https://graph.facebook.com/v21.0/${labelId}/label?user=${psid}&access_token=${accessToken}`)
@@ -199,6 +212,27 @@ const App = () => {
     }
   }
 
+  const handleSubcribeToAutoReply = async (pageId, accessToken) => {
+    setIsLoading(true);
+    const response = await axios.post(`https://graph.facebook.com/v21.0/${pageId}/subscribed_apps?subscribed_fields=messages&access_token=${accessToken}`)
+      .then(response => response.data)
+      .catch(() => null);
+    if (response?.success) {
+      const pageAccessTokenLongLive = await getPageLongLiveAccessToken(pageId, user.accessToken);
+      const saveData = await axios.post('https://webhook-fb-bombot-dev.onrender.com/facebook/addPageData', {
+        pageId: pageId,
+        pageAccessToken: pageAccessTokenLongLive
+      }).then(res => res.data).catch(error => console.log(error));
+      if (saveData.success) {
+        alert('Subcribed to Auto Reply successfully');
+      }
+    }
+    else {
+      alert('Subcribed to Auto Reply failed');
+    }
+    setIsLoading(false);
+  }
+
   return (
     <div className='w-full'>
       <div className='container-2'>
@@ -237,6 +271,12 @@ const App = () => {
                         onClick={() => handleEditFanpage(fanpage.access_token)}
                       >
                         See and Edit Fanpage{`'`}s information
+                      </button>
+                      <button
+                        className={`${customStyle.styleBtnDefault} px-2 py-1 font-medium bg-yellow-100 ml-5`}
+                        onClick={() => handleSubcribeToAutoReply(fanpage.id, fanpage.access_token)}
+                      >
+                        Subcribed to Auto Reply
                       </button>
                     </li>
                   ))}
