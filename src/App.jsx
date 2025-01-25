@@ -251,9 +251,9 @@ const App = () => {
   return (
     <div className='w-full'>
       <div className='container-2'>
-        <div className='absolute left-0'>
+        {!user && <div className='absolute left-0'>
           {test2FA ? <p>2FA code: {test2FA}</p> : <button onClick={handleGet2FA} className={`${customStyle.styleBtnDefault}`}>Get 2FA code for testing account</button>}
-        </div>
+        </div>}
         <h1 className='text-2xl font-bold'>Welcome to Bombot application</h1>
         <img src='../logo.png' width={100} height={100} className='m-5' />
         <p>Login with Facebook to see your fanpages</p>
