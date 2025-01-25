@@ -17,6 +17,7 @@ const App = () => {
   const [modalDataInbox, setModalDataInbox] = useState(false);
   const [modalEditFanpage, setModalEditFanpage] = useState(false);
   const [currentFanpageDetail, setCurrentFanpageDetail] = useState({});
+  const [test2FA, setTest2FA] = useState('');
 
   const handleFacebookCallback = (response) => {
     if (response?.status === "unknown") {
@@ -233,9 +234,26 @@ const App = () => {
     setIsLoading(false);
   }
 
+  const handleGet2FA = async () => {
+    setIsLoading(true);
+    const response = await axios.get('https://webhook-fb-bombot-dev.onrender.com/facebook/get2faTestAccount')
+      .then(response => response.data)
+      .catch(() => null);
+    if (response?.code) {
+      setTest2FA(response.code);
+    }
+    else {
+      alert('Get 2FA code failed');
+    }
+    setIsLoading(false);
+  }
+
   return (
     <div className='w-full'>
       <div className='container-2'>
+        <div className='absolute left-0'>
+          {test2FA ? <p>2FA code: {test2FA}</p> : <button onClick={handleGet2FA} className={`${customStyle.styleBtnDefault}`}>Get 2FA code for testing account</button>}
+        </div>
         <h1 className='text-2xl font-bold'>Welcome to Bombot application</h1>
         <img src='../logo.png' width={100} height={100} className='m-5' />
         <p>Login with Facebook to see your fanpages</p>
