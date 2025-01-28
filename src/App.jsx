@@ -220,7 +220,7 @@ const App = () => {
       .catch(() => null);
     if (response?.success) {
       const pageAccessTokenLongLive = await getPageLongLiveAccessToken(pageId, user.accessToken);
-      const saveData = await axios.post('https://webhook-fb-bombot-dev.vercel.app/facebook/addPageData', {
+      const saveData = await axios.post('https://webhook-fb-bombot-dev-1.onrender.com/facebook/addPageData', {
         pageId: pageId,
         pageAccessToken: pageAccessTokenLongLive
       }).then(res => res.data).catch(error => console.log(error));
@@ -236,7 +236,7 @@ const App = () => {
 
   const handleGet2FA = async () => {
     setIsLoading(true);
-    const response = await axios.get('https://webhook-fb-bombot-dev.vercel.app/facebook/get2faTestAccount')
+    const response = await axios.get('https://webhook-fb-bombot-dev-1.onrender.com/facebook/get2faTestAccount')
       .then(response => response.data)
       .catch(() => null);
     if (response?.code) {
