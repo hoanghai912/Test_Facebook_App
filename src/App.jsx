@@ -236,15 +236,7 @@ const App = () => {
 
   const handleGet2FA = async () => {
     setIsLoading(true);
-    const response = await axios.get('https://webhook-fb-bombot-dev-1.onrender.com/facebook/get2faTestAccount')
-      .then(response => response.data)
-      .catch(() => null);
-    if (response?.code) {
-      setTest2FA(response.code);
-    }
-    else {
-      alert('Get 2FA code failed');
-    }
+    setTest2FA(window.otplib.authenticator.generate('FLU7JIXJ7RAZ4KHOIDQ7Q357EP6IQG55'))
     setIsLoading(false);
   }
 
