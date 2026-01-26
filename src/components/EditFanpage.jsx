@@ -1,8 +1,8 @@
 /* eslint-disable react/prop-types */
-import axios from 'axios';
 import { useState } from 'react';
+import { facebookService } from '../api/facebookService';
 
-const EditFanpage = ({fanpageDetail}) => {
+const EditFanpage = ({ fanpageDetail }) => {
   const [notification, setNotification] = useState('');
 
   const handleSubmit = async (e) => {
@@ -12,54 +12,68 @@ const EditFanpage = ({fanpageDetail}) => {
     const email = e.target[4].value;
     const contact_address = e.target[5].value;
     const accessToken = fanpageDetail.access_token;
-    const dataPost = {
-      website,
-      phone,
-      email,
-      contact_address
-    }
-    const response = await axios.post(`https://graph.facebook.com/v21.0/me?access_token=${accessToken}`, dataPost)
-    .then(response => response.data)
-    .catch(() => {});
-    if (response.success) {
-      setNotification('Update successfully');
-    }
-    else {
+
+    const dataPost = { website, phone, email, contact_address };
+
+    try {
+      const response = await facebookService.updatePageDetails(accessToken, dataPost);
+      if (response.success) {
+        setNotification('Update successfully');
+      } else {
+        setNotification('Update failed');
+      }
+    } catch (error) {
       setNotification('Update failed');
     }
+
     setTimeout(() => {
       setNotification('');
     }, 5000);
   }
   return (
-    <div className='bg-white w-[80%] h-[80%] m-auto p-5 rounded-lg'>
-      <h1 className='text-2xl font-bold text-center'>Edit Fanpage Information</h1>
-      <form className='flex flex-col overflow-auto h-full p-4' onSubmit={(e) => handleSubmit(e)}>
-        <label className='font-semibold'>Name</label>
-        <input disabled type='text' className='border border-gray-300 rounded-lg p-2 my-2' defaultValue={fanpageDetail.name} />
-        <label className='font-semibold'>ID</label>
-        <input disabled type='text' className='border border-gray-300 rounded-lg p-2 my-2' defaultValue={fanpageDetail.id} />
-        <label className='font-semibold'>Website</label>
-        <input type='text' className='border border-gray-300 rounded-lg p-2 my-2' defaultValue={fanpageDetail.website} />
-        <label className='font-semibold'>Phone</label>
-        <input type='text' className='border border-gray-300 rounded-lg p-2 my-2' defaultValue={fanpageDetail.phone} />
-        <label className='font-semibold'>Email</label>
-        <input type='text' className='border border-gray-300 rounded-lg p-2 my-2' defaultValue={fanpageDetail.email} />
-        <label className='font-semibold'>Contact Address</label>
-        <input type='text' className='border border-gray-300 rounded-lg p-2 my-2' defaultValue={fanpageDetail.contact_address} />
-        {notification && <p className={`${notification.includes('successfully') ? customStyle.success : customStyle.error}  font-semibold rounded p-2`}>
+    <div className='bg-white w-full h-full p-6 overflow-auto'>
+      <h1 className='text-2xl font-bold text-center mb-6 text-gray-800'>Edit Fanpage Information</h1>
+      <form className='flex flex-col gap-4' onSubmit={(e) => handleSubmit(e)}>
+        <div>
+          <label className='font-semibold text-gray-700 block mb-1'>Name</label>
+          <input disabled type='text' className='w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-500' defaultValue={fanpageDetail.name} />
+        </div>
+
+        <div>
+          <label className='font-semibold text-gray-700 block mb-1'>ID</label>
+          <input disabled type='text' className='w-full border border-gray-300 rounded-lg p-2 bg-gray-100 text-gray-500' defaultValue={fanpageDetail.id} />
+        </div>
+
+        <div>
+          <label className='font-semibold text-gray-700 block mb-1'>Website</label>
+          <input type='text' className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' defaultValue={fanpageDetail.website} />
+        </div>
+
+        <div>
+          <label className='font-semibold text-gray-700 block mb-1'>Phone</label>
+          <input type='text' className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' defaultValue={fanpageDetail.phone} />
+        </div>
+
+        <div>
+          <label className='font-semibold text-gray-700 block mb-1'>Email</label>
+          <input type='text' className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' defaultValue={fanpageDetail.email} />
+        </div>
+
+        <div>
+          <label className='font-semibold text-gray-700 block mb-1'>Contact Address</label>
+          <input type='text' className='w-full border border-gray-300 rounded-lg p-2 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition' defaultValue={fanpageDetail.contact_address} />
+        </div>
+
+        {notification && <p className={`text-center font-semibold rounded p-3 text-sm ${notification.includes('successfully') ? 'bg-green-100 text-green-700 border border-green-200' : 'bg-red-100 text-red-700 border border-red-200'}`}>
           {notification}
         </p>}
-        <button className='bg-blue-500 text-white font-semibold py-2 px-4 rounded-lg mt-2'>Save</button>
+
+        <button className='bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg mt-4 transition shadow-md'>
+          Save Changes
+        </button>
       </form>
     </div>
   )
 }
-
-const customStyle = {
-  success: 'bg-green-400 text-white',
-  error: 'bg-red-400 text-white',
-}
-
 
 export default EditFanpage;

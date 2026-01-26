@@ -1,18 +1,33 @@
 /* eslint-disable react/prop-types */
+import React from 'react';
 
 const Modal = (props) => {
+  // Prevent click inside modal from closing it
+  const handleContentClick = (e) => {
+    e.stopPropagation();
+  };
+
   return (
-    <div>
-      <div className='modal bg-gray-300 w-full h-full opacity-90 absolute top-0 left-0' onClick={props.handleCloseModal}></div>
-      <div className="modal-container bg-white w-[60%] h-[80%] absolute top-[50%] left-[50%] rounded">
-        <div className='flex justify-between items-center'>
-          <div className='text-2xl font-bold text-blue-500 ml-5 mt-5'>List of Information</div>
-          <div className='text-4xl cursor-pointer hover:text-red-500 mr-5 mt-4' onClick={props.handleCloseModal}>&times;</div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6" style={{ backgroundColor: 'rgba(0,0,0,0.5)' }} onClick={props.handleCloseModal}>
+      <div
+        className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-fadeIn overflow-hidden"
+        onClick={handleContentClick}
+      >
+        <div className='flex justify-between items-center p-6 border-b border-gray-100'>
+          <h2 className='text-xl font-bold text-gray-800'>Details</h2>
+          <button
+            className='text-gray-400 hover:text-red-500 transition focus:outline-none p-2 rounded-full hover:bg-gray-100'
+            onClick={props.handleCloseModal}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
         </div>
-        <div className="modal-content">
-          
+
+        <div className="flex-1 overflow-auto p-0">
+          {props.children}
         </div>
-        {props.children}
       </div>
     </div>
   );

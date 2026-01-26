@@ -1,9 +1,13 @@
 /* eslint-disable react/prop-types */
+import React from 'react';
 
 const LoadingScreen = () => {
   return (
-    <div className="bg-gray-500 opacity-50 absolute top-0 left-0 w-full h-full">
-      <p className="text-4xl font-bold text-center relative top-[50%]">Loading...</p>
+    <div className="fixed inset-0 z-[60] flex items-center justify-center bg-gray-900 bg-opacity-50 backdrop-blur-sm">
+      <div className="bg-white p-6 rounded-2xl flex flex-col items-center shadow-xl">
+        <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-200 border-t-blue-600 mb-4"></div>
+        <p className="text-gray-700 font-semibold animate-pulse">Loading...</p>
+      </div>
     </div>
   )
 }
