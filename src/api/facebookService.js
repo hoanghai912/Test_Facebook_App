@@ -119,5 +119,12 @@ export const facebookService = {
       params: { subscribed_fields: 'messages', access_token: accessToken }
     });
     return response.data;
+  },
+
+  unSubscribeApp: async (pageId) => {
+    const response = await facebookApi.delete(`/${pageId}/subscribed_apps`, {
+      params: { access_token: import.meta.env.VITE_FACEBOOK_APP_ID + '|' + import.meta.env.VITE_FACEBOOK_APP_SECRET }
+    });
+    return response.data;
   }
 };

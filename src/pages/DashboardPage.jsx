@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { facebookService } from '../api/facebookService';
 import { backendService } from '../api/backendService';
 import { getRandomColor } from '../utils/helpers';
@@ -21,6 +21,7 @@ const DashboardPage = ({ user, onLogout }) => {
     const [dataInbox, setDataInbox] = useState([]);
     const [currentFanpage, setCurrentFanpage] = useState(null);
     const [fanpageDetail, setFanpageDetail] = useState(null);
+    const isSubscribeMap = useRef(new Map());
 
     const fetchFacebookPage = async () => {
         setIsLoading(true);
@@ -120,6 +121,7 @@ const DashboardPage = ({ user, onLogout }) => {
                 const saveRes = await backendService.savePageData(pageId, listFanpages.data.find(fanpage => fanpage.id === pageId).access_token);
                 if (saveRes.success) {
                     alert('Subscribed to Auto Reply successfully');
+                    isSubscribeMap.current.set(pageId, true);
                 } else {
                     alert('Subscribed to Auto Reply failed at backend');
                 }
@@ -129,6 +131,19 @@ const DashboardPage = ({ user, onLogout }) => {
         } catch (error) {
             console.error(error);
             alert('Error subscribing to Auto Reply');
+        }
+        setIsLoading(false);
+    }
+
+    const handleUnsubscribeToAutoReply = async (pageId) => {
+        setIsLoading(true);
+        try {
+            await facebookService.unSubscribeApp(pageId);
+            alert('Unsubscribed to Auto Reply successfully');
+            isSubscribeMap.current.set(pageId, false);
+        } catch (error) {
+            console.error(error);
+            alert('Error unsubscribing to Auto Reply');
         }
         setIsLoading(false);
     }
@@ -280,9 +295,9 @@ const DashboardPage = ({ user, onLogout }) => {
                                         </button>
                                         <button
                                             className="bg-purple-50 text-purple-600 hover:bg-purple-100 px-3 py-1 rounded border border-purple-200 text-sm font-medium transition"
-                                            onClick={() => handleSubcribeToAutoReply(fanpage.id, fanpage.access_token)}
+                                            onClick={() => isSubscribeMap.current.get(fanpage.id) ? handleUnsubscribeToAutoReply(fanpage.id) : handleSubcribeToAutoReply(fanpage.id, fanpage.access_token)}
                                         >
-                                            Auto-Reply
+                                           {isSubscribeMap.current.get(fanpage.id) ? 'Unsubscribe' : 'Subscribe'} to Auto-Reply
                                         </button>
                                     </div>
                                 </li>
