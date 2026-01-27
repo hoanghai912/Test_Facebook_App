@@ -279,7 +279,7 @@ const DashboardPage = ({ user, onLogout }) => {
                         <ul className="divide-y divide-gray-100">
                             {listFanpages.data.map((fanpage, index) => (
                                 <li key={index} className="p-4 hover:bg-gray-50 transition flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                                    <span className="font-semibold text-gray-800 text-lg">{fanpage.name}</span>
+                                    <span className="font-semibold text-gray-800 text-lg hover:text-blue-600 hover:underline"><a href={`https://www.facebook.com/${fanpage.id}`} target="_blank">{fanpage.name}</a></span>
                                     <div className="flex flex-wrap gap-2">
                                         <button
                                             className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1 rounded border border-blue-200 text-sm font-medium transition"
